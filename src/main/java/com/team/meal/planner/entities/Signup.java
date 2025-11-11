@@ -4,24 +4,30 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "signups")
+@Table(name = "signups", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"meal_id", "person_id"})
+})
 public class Signup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "meal_id", nullable = false)
     private Meal meal;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
+    @Column(length = 500)
     private String note;
 
     private LocalDateTime createdAt;
+
+    @Version
+    private Long version;
 
     @PrePersist
     protected void onCreate() {
@@ -36,27 +42,35 @@ public class Signup {
         return meal;
     }
 
-    public Person getPerson() {
-        return person;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
     public void setMeal(Meal meal) {
         this.meal = meal;
+    }
+
+    public Person getPerson() {
+        return person;
     }
 
     public void setPerson(Person person) {
         this.person = person;
     }
 
+    public String getNote() {
+        return note;
+    }
+
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

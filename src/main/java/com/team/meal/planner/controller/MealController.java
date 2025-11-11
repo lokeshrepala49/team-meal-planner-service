@@ -6,7 +6,6 @@ import com.team.meal.planner.dto.MealUpdate;
 import com.team.meal.planner.entities.Meal;
 import com.team.meal.planner.service.MealService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
