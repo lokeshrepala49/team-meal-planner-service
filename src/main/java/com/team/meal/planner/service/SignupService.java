@@ -25,13 +25,16 @@ public class SignupService {
     private final SignupRepository signupRepository;
     private final MealRepository mealRepository;
     private final PersonRepository personRepository;
+    private final EmailService emailService;
 
     public SignupService(SignupRepository signupRepository,
                          MealRepository mealRepository,
-                         PersonRepository personRepository) {
+                         PersonRepository personRepository,
+                         EmailService emailService) {
         this.signupRepository = signupRepository;
         this.mealRepository = mealRepository;
         this.personRepository = personRepository;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -69,6 +72,8 @@ public class SignupService {
         signup.setPerson(person);
         signup.setNote(note);
         Signup saved = signupRepository.save(signup);
+
+        emailService.sendSignupConfirmation(person.getEmail(), meal.getTitle());
 
         return new SignupResult(saved, true);
     }

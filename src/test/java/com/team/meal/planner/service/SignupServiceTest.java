@@ -26,6 +26,7 @@ class SignupServiceTest {
     MealRepository mealRepository;
     PersonRepository personRepository;
     SignupRepository signupRepository;
+    EmailService emailService;
     SignupService signupService;
 
     @BeforeEach
@@ -33,7 +34,8 @@ class SignupServiceTest {
         mealRepository = mock(MealRepository.class);
         personRepository = mock(PersonRepository.class);
         signupRepository = mock(SignupRepository.class);
-        signupService = new SignupService(signupRepository, mealRepository, personRepository);
+        emailService = mock(EmailService.class);
+        signupService = new SignupService(signupRepository, mealRepository, personRepository, emailService);
     }
 
     @Test
@@ -60,6 +62,7 @@ class SignupServiceTest {
         assertFalse(res.isCreated());
         assertEquals(existing, res.getSignup());
         verify(signupRepository, never()).save(any());
+        verifyNoInteractions(emailService);
     }
 
     @Test
@@ -77,6 +80,7 @@ class SignupServiceTest {
 
         assertThrows(ConflictException.class, () -> signupService.createSignup(10L, 20L, "n"));
         verify(signupRepository, never()).save(any());
+        verifyNoInteractions(emailService);
     }
 
     @Test
@@ -96,6 +100,7 @@ class SignupServiceTest {
 
         assertThrows(ConflictException.class, () -> signupService.createSignup(11L, 21L, "n"));
         verify(signupRepository, never()).save(any());
+        verifyNoInteractions(emailService);
     }
 
     @Test
@@ -116,6 +121,7 @@ class SignupServiceTest {
 
         assertThrows(ConflictException.class, () -> signupService.createSignup(12L, 22L, "n"));
         verify(signupRepository, never()).save(any());
+        verifyNoInteractions(emailService);
     }
 
     @Test
@@ -124,10 +130,12 @@ class SignupServiceTest {
         meal.setDate(LocalDateTime.now().plusDays(5));
         meal.setMaxAttendees(10);
         meal.setTags(new HashSet<>(List.of("VEGAN_FRIENDLY")));
+        meal.setTitle("Vegan Feast");
 
         Person person = new Person();
         person.setName("Eve");
         person.setDietaryTags(new HashSet<>(List.of(DietaryTag.VEGAN)));
+        person.setEmail("eve@example.com");
 
         when(mealRepository.findByIdForUpdate(13L)).thenReturn(Optional.of(meal));
         when(personRepository.findById(23L)).thenReturn(Optional.of(person));
@@ -146,5 +154,6 @@ class SignupServiceTest {
         assertSame(person, saved.getPerson());
         assertSame(meal, saved.getMeal());
         verify(signupRepository, times(1)).save(any(Signup.class));
+        verify(emailService, times(1)).sendSignupConfirmation("eve@example.com", "Vegan Feast");
     }
 }
