@@ -47,4 +47,16 @@ public class Signup {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    public void setMeal(Meal meal) {
+        this.meal = meal;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 }

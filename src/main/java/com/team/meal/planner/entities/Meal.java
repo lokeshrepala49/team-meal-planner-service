@@ -79,4 +79,28 @@ public class Meal {
     public Long getVersion() {
         return version;
     }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setCuisine(String cuisine) {
+        this.cuisine = cuisine;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
+    public void setMaxAttendees(Integer maxAttendees) {
+        this.maxAttendees = maxAttendees;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 }
