@@ -2,6 +2,7 @@ package com.team.meal.planner.entities;
 
 import jakarta.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -48,5 +49,19 @@ public class Person {
 
     public void setDietaryTags(Set<DietaryTag> dietaryTags) {
         this.dietaryTags = dietaryTags;
+    }
+
+    public boolean isMealSuitable(Set<String> mealTags) {
+        if (mealTags == null || mealTags.isEmpty()) return true;
+        for (DietaryTag tag : dietaryTags) {
+            if (tag == DietaryTag.NONE) continue;
+            boolean satisfied = mealTags.stream()
+                    .filter(Objects::nonNull)
+                    .anyMatch(mealTag ->
+                            mealTag.equalsIgnoreCase(tag.name()) ||
+                                    mealTag.toUpperCase().startsWith(tag.name() + "_"));
+            if (!satisfied) return false;
+        }
+        return true;
     }
 }

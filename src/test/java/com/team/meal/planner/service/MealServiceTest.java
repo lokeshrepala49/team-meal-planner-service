@@ -31,7 +31,6 @@ class MealServiceTest {
 
     @Test
     void updateMeal_conflict_onOptimisticLocking() {
-        // Arrange: existing meal
         Meal existing = new Meal();
         existing.setDate(LocalDateTime.now().plusDays(1));
         existing.setTitle("Pasta");
@@ -44,10 +43,8 @@ class MealServiceTest {
         update.setTitle("Updated Pasta");
         update.setVersion(1L);
 
-        // Simulate optimistic locking failure during save
         when(mealRepository.save(any(Meal.class))).thenThrow(new OptimisticLockingFailureException("Optimistic lock failed"));
 
-        // Act & Assert
         assertThrows(ConflictException.class, () -> mealService.updateMeal(5L, update));
 
         verify(mealRepository, times(1)).findById(5L);
