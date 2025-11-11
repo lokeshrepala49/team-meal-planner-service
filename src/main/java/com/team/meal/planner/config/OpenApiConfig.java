@@ -15,11 +15,8 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Meal Planner API")
-                        .description("API documentation for the Meal Planning Service")
-                        .version("v1.0.0")
-                        .license(new License().name("Apache 2.0").url("https://springdoc.org")))
-                .externalDocs(new ExternalDocumentation()
-                        .description("Project Repository")
-                        .url("https://github.com/lokeshrepala49/team-meal-planner-service/"));
+                        .description("API for managing meals, people, and signups with dietary restrictions")
+                        .version("1.0.0")
+                        .license(new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0")));
     }
 }

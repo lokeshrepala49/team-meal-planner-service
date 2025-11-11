@@ -1,6 +1,7 @@
 package com.team.meal.planner.controller;
 
 import com.team.meal.planner.dto.SignupCreate;
+import com.team.meal.planner.dto.SignupResponse;
 import com.team.meal.planner.entities.Signup;
 import com.team.meal.planner.service.SignupService;
 import com.team.meal.planner.dto.SignupResult;
@@ -37,12 +38,16 @@ public class SignupController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Signup>> listPersonSignups(
+    public ResponseEntity<List<SignupResponse>> listPersonSignups(
             @RequestParam Long personId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(defaultValue = "day") String range
     ) {
         List<Signup> signups = signupService.listPersonSignups(personId, date, range);
-        return ResponseEntity.ok(signups);
+        List<SignupResponse> responses = signups.stream()
+                .map(SignupResponse::new)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
+
 }

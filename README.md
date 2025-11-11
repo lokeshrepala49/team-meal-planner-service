@@ -49,4 +49,5 @@ Notes
 
 - Config is in `src/main/resources/application.yaml`.
 - Error responses use a consistent JSON shape: `{ timestamp, status, error, message, path, details[] }`.
+- Import the Postman collection from `MealPlanner API.postman_collection.json` for API testing.
 

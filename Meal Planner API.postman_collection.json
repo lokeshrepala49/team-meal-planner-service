@@ -1,0 +1,258 @@
+{
+	"info": {
+		"_postman_id": "f91bc101-15fc-4cdb-8d39-a75ad089465c",
+		"name": "Meal Planner API",
+		"description": "Postman collection for the Meal Planner API.\nIncludes endpoints for managing Meals, People, and Signups.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Meals",
+			"item": [
+				{
+					"name": "Create Meal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Vegan Dinner\",\n  \"cuisine\": \"Indian\",\n  \"date\": \"{{tomorrowTimestamp}}\",\n  \"tags\": [\"VEGAN_FRIENDLY\", \"GLUTEN_FREE\"],\n  \"maxAttendees\": 10\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/meals",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"meals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Meals (with filters)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/meals?dateFrom={{today}}&cuisine=Indian&tag=VEGAN_FRIENDLY",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"meals"
+							],
+							"query": [
+								{
+									"key": "dateFrom",
+									"value": "{{today}}"
+								},
+								{
+									"key": "cuisine",
+									"value": "Indian"
+								},
+								{
+									"key": "tag",
+									"value": "VEGAN_FRIENDLY"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Meal Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/meals/{{mealId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"meals",
+								"{{mealId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Meal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Vegan Feast\",\n  \"maxAttendees\": 15,\n  \"version\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/meals/{{mealId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"meals",
+								"{{mealId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Meal",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/meals/{{mealId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"meals",
+								"{{mealId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "People",
+			"item": [
+				{
+					"name": "Create Person",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Alice\",\n  \"email\": \"alice@example.com\",\n  \"dietaryTags\": [\"VEGAN\", \"NUT_FREE\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/people",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"people"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Signups",
+			"item": [
+				{
+					"name": "Create Signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mealId\": {{mealId}},\n  \"personId\": {{personId}},\n  \"note\": \"Excited for this meal!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/signups",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"signups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Person Signups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/signups?personId={{personId}}&date={{today}}&range=week",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"signups"
+							],
+							"query": [
+								{
+									"key": "personId",
+									"value": "{{personId}}"
+								},
+								{
+									"key": "date",
+									"value": "{{today}}"
+								},
+								{
+									"key": "range",
+									"value": "week"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "mealId",
+			"value": "1"
+		},
+		{
+			"key": "personId",
+			"value": "1"
+		},
+		{
+			"key": "today",
+			"value": "2025-11-11"
+		},
+		{
+			"key": "tomorrowTimestamp",
+			"value": "2025-11-12T18:00:00"
+		}
+	]
+}
