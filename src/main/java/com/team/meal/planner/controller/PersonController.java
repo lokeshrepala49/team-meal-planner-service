@@ -2,7 +2,7 @@ package com.team.meal.planner.controller;
 
 import com.team.meal.planner.dto.PersonCreate;
 import com.team.meal.planner.entities.Person;
-import com.team.meal.planner.repository.PersonRepository;
+import com.team.meal.planner.service.PersonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -14,18 +14,15 @@ import java.net.URI;
 @RequestMapping("/api/people")
 public class PersonController {
 
-    private final PersonRepository personRepository;
+    private final PersonService personService;
 
-    public PersonController(PersonRepository personRepository) {
-        this.personRepository = personRepository;
+    public PersonController(PersonService personService) {
+        this.personService = personService;
     }
 
     @PostMapping
     public ResponseEntity<Person> createPerson(@Valid @RequestBody PersonCreate dto) {
-        Person p = new Person();
-        p.setName(dto.getName());
-        p.setEmail(dto.getEmail());
-        Person saved = personRepository.save(p);
+        Person saved = personService.createPerson(dto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(saved.getId()).toUri();
         return ResponseEntity.created(location).body(saved);

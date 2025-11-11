@@ -4,6 +4,7 @@ import com.team.meal.planner.dto.SignupResult;
 import com.team.meal.planner.entities.Meal;
 import com.team.meal.planner.entities.Person;
 import com.team.meal.planner.entities.Signup;
+import com.team.meal.planner.exception.BadRequestException;
 import com.team.meal.planner.exception.ConflictException;
 import com.team.meal.planner.repository.MealRepository;
 import com.team.meal.planner.repository.PersonRepository;
@@ -15,6 +16,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,17 +34,10 @@ public class SignupService {
         this.entityManager = entityManager;
     }
 
-    /**
-     * Create a signup enforcing business rules:
-     * 1) person can sign up only once per day
-     * 2) person's dietary tags must be satisfied by meal's tags (all restrictive tags must be present)
-     * 3) enforce maxAttendees transactionally and return 409 when full
-     * 4) idempotent: if a signup already exists for the same meal/person, return it
-     */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public SignupResult createSignup(Long mealId, Long personId, String note) {
-        Meal meal = mealRepository.findById(mealId).orElseThrow(() -> new IllegalArgumentException("meal not found"));
-        Person person = personRepository.findById(personId).orElseThrow(() -> new IllegalArgumentException("person not found"));
+        Meal meal = mealRepository.findById(mealId).orElseThrow(() -> new BadRequestException("meal not found"));
+        Person person = personRepository.findById(personId).orElseThrow(() -> new BadRequestException("person not found"));
 
         Optional<Signup> existing = signupRepository.findByMealIdAndPersonId(mealId, personId);
         if (existing.isPresent()) {
@@ -88,5 +83,21 @@ public class SignupService {
         s.setPerson(person);
         s.setNote(note);
         return signupRepository.save(s);
+    }
+
+    public List<Signup> listPersonSignups(Long personId, java.time.LocalDate date, String range) {
+        if (!personRepository.existsById(personId)) throw new BadRequestException("Person not found");
+
+        LocalDate d = (date == null) ? LocalDate.now() : date;
+        LocalDateTime start;
+        LocalDateTime end;
+        if ("week".equalsIgnoreCase(range)) {
+            start = d.with(java.time.DayOfWeek.MONDAY).atStartOfDay();
+            end = start.plusDays(7).minusNanos(1);
+        } else {
+            start = d.atStartOfDay();
+            end = d.atTime(java.time.LocalTime.MAX);
+        }
+        return signupRepository.findByPersonIdAndDateBetween(personId, start, end);
     }
 }
